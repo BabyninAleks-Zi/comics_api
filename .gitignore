@@ -1,0 +1,7 @@
+.env
+venv/
+images/
+tg_publisher.py
+__pycache__/
+.mypy_cache/
+.idea/
