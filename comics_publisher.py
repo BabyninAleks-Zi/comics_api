@@ -1,13 +1,10 @@
 import os
 import requests
 import random
-from vk_publisher import load_vk_config, publish_post_to_vk
+from environs import Env
+from vk_publisher import VK_API_VERSION, publish_post_to_vk
 
 NUMBER_OF_COMICS = 3205
-
-def ensure_images_dir(images_dir):
-    os.makedirs(images_dir, exist_ok=True)
-
 
 def get_image(url, images_dir='images'):
     if not url.startswith('http'):
@@ -36,14 +33,19 @@ def main():
         image_source = comic['img']
         post_text = comic['alt']
         images_dir = 'images'
-        ensure_images_dir(images_dir)
-        vk_config = load_vk_config()
+        os.makedirs(images_dir, exist_ok=True)
+
+        env = Env()
+        env.read_env()
+        vk_api_token = env.str('VK_API_TOKEN')
+        vk_group_id = env.int('VK_GROUP_ID')
+
         published_comics = publish_post_to_vk(
             post_text,
             get_image(image_source, images_dir),
-            vk_config['vk_group_id'],
-            vk_config['vk_api_token'],
-            vk_config['vk_api_version'],
+            vk_group_id,
+            vk_api_token,
+            VK_API_VERSION,
         )
     except requests.exceptions.RequestException as e:
         raise RuntimeError(f'Сетевой запрос не удался: {e}') from e

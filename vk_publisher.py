@@ -1,17 +1,6 @@
 import requests
-from environs import Env
 
 VK_API_VERSION = '5.199'
-
-
-def load_vk_config():
-    env = Env()
-    env.read_env()
-    return {
-        'vk_api_token': env.str('VK_API_TOKEN'),
-        'vk_group_id': int(env.str('VK_GROUP_ID')),
-        'vk_api_version': VK_API_VERSION,
-    }
 
 
 def upload_photo_for_wall(image_source, vk_group_id, vk_api_token, vk_api_version=VK_API_VERSION):
@@ -70,11 +59,3 @@ def publish_post_to_vk(post_text, image_source, vk_group_id, vk_api_token, vk_ap
     vk_response = response.json()
     post_id = vk_response.get('response', {}).get('post_id')
     return post_id
-
-
-def main():
-    load_vk_config()
-
-
-if __name__ == '__main__':
-    main()
